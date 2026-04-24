@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bombay Caterers</title>
+
+<style>
+body {font-family: Arial; margin:0; background:#111; color:#fff;}
+header {background:#000; padding:15px; text-align:center;}
+.notice {
+  background:#e67e22;
+  text-align:center;
+  padding:12px;
+  font-weight:bold;
+  line-height:1.5;
+}
+.section {padding:20px;}
+.menu-item {
+  display:flex;
+  justify-content:space-between;
+  background:#1c1c1c;
+  margin:10px 0;
+  padding:12px;
+  border-radius:8px;
+}
+button {
+  background:#e67e22;
+  color:white;
+  border:none;
+  padding:6px 12px;
+  border-radius:5px;
+}
+.cart {
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:#000;
+  padding:15px;
+}
+input {
+  width:90%;
+  padding:10px;
+  margin:5px 0;
+  border-radius:5px;
+  border:none;
+}
+h2 {color:#f1c40f;}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>Bombay Caterers</h1>
+  <p>Khushboo mein hi baat hai, swad mein jazbaat hai</p>
+</header>
+
+<div class="notice">
+  ⚠️ Advance order only – Minimum 4 hours preparation time <br>
+  ⛔ 4 PM orders close after 10 AM <br>
+  ⛔ Same-day orders close after 6 PM <br>
+  💰 Payment on Pickup
+</div>
+
+<div class="section" id="menu"></div>
+
+<div class="section">
+  <h2>Complete Your Order</h2>
+
+  <input type="text" id="name" placeholder="Your Name"><br>
+  <input type="datetime-local" id="time"><br>
+
+  <button onclick="placeOrder()">Place Order (Pay on Pickup)</button>
+</div>
+
+<div class="cart">
+  <h3>Total: ₹<span id="total">0</span></h3>
+</div>
+
+<script>
+const phone = "919913318709";
+
+const menu = [
+  {name:"Chicken Biryani", price:550},
+  {name:"Chicken Gravy", price:500},
+  {name:"Mutton Gravy", price:950},
+  {name:"Mutton Biryani", price:1000},
+  {name:"Tikka Biryani (Bone)", price:600},
+  {name:"Tikka Biryani (Boneless)", price:700},
+  {name:"Butter Chicken", price:500},
+  {name:"Angara Chicken", price:500},
+  {name:"Tikka Masala", price:500},
+  {name:"Green Chicken", price:500},
+  {name:"White Chicken", price:500}
+];
+
+let cart = [];
+let total = 0;
+
+const menuDiv = document.getElementById("menu");
+
+menu.forEach((item, index) => {
+  let div = document.createElement("div");
+  div.className = "menu-item";
+  div.innerHTML = `
+    <span>${item.name} - ₹${item.price}</span>
+    <button onclick="addItem(${index})">Add</button>
+  `;
+  menuDiv.appendChild(div);
+});
+
+function addItem(index){
+  cart.push(menu[index]);
+  total += menu[index].price;
+  document.getElementById("total").innerText = total;
+}
+
+function placeOrder(){
+  let name = document.getElementById("name").value;
+  let timeInput = document.getElementById("time").value;
+
+  if(!name || !timeInput){
+    alert("Please fill all details");
+    return;
+  }
+
+  let selectedTime = new Date(timeInput);
+  let now = new Date();
+
+  let diff = (selectedTime - now) / (1000 * 60 * 60);
+
+  if(diff < 4){
+    alert("Select at least 4 hours later");
+    return;
+  }
+
+  let currentHour = now.getHours();
+  let selectedHour = selectedTime.getHours();
+
+  if(currentHour >= 10 && selectedHour === 16){
+    alert("4 PM orders are closed after 10 AM");
+    return;
+  }
