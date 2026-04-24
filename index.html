@@ -142,3 +142,26 @@ function placeOrder(){
     alert("4 PM orders are closed after 10 AM");
     return;
   }
+
+  if(currentHour >= 18 && selectedTime.getDate() === now.getDate()){
+    alert("Same-day orders closed after 6 PM. Please select next day.");
+    return;
+  }
+
+  let orderDetails = cart.map(item => item.name).join(", ");
+
+  let message = `New Order:%0A
+Name: ${name}%0A
+Items: ${orderDetails}%0A
+Total: ₹${total}%0A
+Pickup Time: ${timeInput}%0A
+Payment: Pay on Pickup`;
+
+  let url = `https://wa.me/${phone}?text=${message}`;
+  window.open(url, "_blank");
+}
+</script>
+
+</body>
+</html>
+
